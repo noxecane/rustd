@@ -1,25 +1,29 @@
 extern crate rustd;
 
+use std::ops::Deref;
+
 fn main() {
-    let names = LinkedList::new();
-    let names = names.add("Olakunle");
-    let names = names.add("Arewa");
-    let names = names.add("Daniel");
-    println!("{:?}", names);
+    let x = 5;
+    let y = &x;
+    let z = Boxy::new(x);
+
+    assert_eq!(5, x);
+    assert_eq!(5, *y);
+    assert_eq!(5, *z);
 }
 
-#[derive(Debug)]
-enum LinkedList<T> {
-    Cons(T, Box<LinkedList<T>>),
-    Empty
-}
+struct Boxy<T>(T);
 
-impl<T> LinkedList<T> {
-    fn new() -> LinkedList<T> {
-        LinkedList::Empty
+impl<T> Boxy<T> {
+    fn new(t: T) -> Boxy<T> {
+        Boxy(t)
     }
+}
 
-    fn add(self, value: T) -> LinkedList<T> {
-        LinkedList::Cons(value, Box::new(self))
+impl<T> Deref for Boxy<T> {
+    type Target = T;
+
+    fn deref(&self) -> &T {
+        &self.0
     }
 }
