@@ -1,29 +1,45 @@
 extern crate rustd;
 
-use std::ops::Deref;
+use rustd::{Screen, Draw, Button};
 
 fn main() {
-    let x = 5;
-    let y = &x;
-    let z = Boxy::new(x);
-
-    assert_eq!(5, x);
-    assert_eq!(5, *y);
-    assert_eq!(5, *z);
+    let screen = Screen {
+        components: vec![
+            Box::new(SelectBox {
+                name: String::from("can_continue"),
+                width: 250,
+                height: 30,
+                options: vec![
+                    String::from("Yes"),
+                    String::from("No"),
+                    String::from("Maybe"),
+                ],
+            }),
+            Box::new(Button {
+                width: 100,
+                height: 30,
+                label: String::from("Done"),
+            }),
+        ],
+    };
+    screen.run();
 }
 
-struct Boxy<T>(T);
-
-impl<T> Boxy<T> {
-    fn new(t: T) -> Boxy<T> {
-        Boxy(t)
-    }
+struct SelectBox {
+    name: String,
+    width: u32,
+    height: u32,
+    options: Vec<String>,
 }
 
-impl<T> Deref for Boxy<T> {
-    type Target = T;
-
-    fn deref(&self) -> &T {
-        &self.0
+impl Draw for SelectBox {
+    fn draw(&self) {
+        println!(
+            "Name = {}, Width = {}, Height = {}, Options = {:?}",
+            self.name,
+            self.width,
+            self.height,
+            self.options
+        );
     }
 }
