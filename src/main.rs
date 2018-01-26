@@ -1,45 +1,16 @@
 extern crate rustd;
 
-use rustd::{Screen, Draw, Button};
+use rustd::Post;
 
 fn main() {
-    let screen = Screen {
-        components: vec![
-            Box::new(SelectBox {
-                name: String::from("can_continue"),
-                width: 250,
-                height: 30,
-                options: vec![
-                    String::from("Yes"),
-                    String::from("No"),
-                    String::from("Maybe"),
-                ],
-            }),
-            Box::new(Button {
-                width: 100,
-                height: 30,
-                label: String::from("Done"),
-            }),
-        ],
-    };
-    screen.run();
-}
+    let mut post = Post::new();
 
-struct SelectBox {
-    name: String,
-    width: u32,
-    height: u32,
-    options: Vec<String>,
-}
+    post.add_text("I ate a salad for lunch today");
+    assert_eq!("", post.content());
 
-impl Draw for SelectBox {
-    fn draw(&self) {
-        println!(
-            "Name = {}, Width = {}, Height = {}, Options = {:?}",
-            self.name,
-            self.width,
-            self.height,
-            self.options
-        );
-    }
+    post.request_review();
+    assert_eq!("", post.content());
+
+    post.approve();
+    assert_eq!("I ate a salad for lunch today", post.content());
 }
